@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 21180683
+CRC: 3602023768
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0520426899ead4f2bf427b3dd8ce3377
+    Hash: cd9bdc1d2950e180212ed1d63b3850c6
   TypeTreeHash:
     serializedVersion: 2
     Hash: 839c8a6aef3ebfcdcf160ac57bee383d
@@ -41,4 +41,4 @@ SerializeReferenceClassIdentifiers:
 Assets:
 - Assets/ABM/Demo/Prefabs/Button.prefab
 Dependencies:
-- D:/Projects/ABM/AssetBundles/StandaloneWindows/sprites
+- D:/Projects/ABM/AssetBundles/iOS/sprites
