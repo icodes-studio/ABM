@@ -115,14 +115,10 @@ namespace ABM
             var directories = Directory.GetDirectories(source);
 
             foreach (var file in files)
-            {
                 File.Copy(file, Path.Combine(target, Path.GetFileName(file)));
-            }
 
             foreach (var directory in directories)
-            {
                 CopyPath(directory, Path.Combine(target, Path.GetFileName(directory)));
-            }
         }
 
         public static void ClearPath(string path)

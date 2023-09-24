@@ -186,11 +186,12 @@ _**A**sset **B**undle **M**anager_
         PROJECT
         \Assets
             \StreamingAssets
-            \iOS
-                \iOS
-                \iOS.manifest
-                \SomeBundle
-                \SomeBundle.manifest
+                \AssetBundles
+                    \iOS
+                        \iOS
+                        \iOS.manifest
+                        \SomeBundle
+                        \SomeBundle.manifest
         ```
     - You can simply copy them using the menu below.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-3.png)
