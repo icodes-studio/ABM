@@ -180,7 +180,7 @@ _**A**sset **B**undle **M**anager_
 
 - **Preparation**
     - ABM supports pre-caching your bundles with the use of the ***StreamingAssets*** folder in Unity.
-    - Once your bundles are built you can copy the manifest and any number of bundles to the ***StreamingAsests\PLATFORM*** folder.
+    - Once your bundles are built you can copy the manifest and any number of bundles to the ***StreamingAsests\AssetBundles\PLATFORM*** folder.
     - For example if you wanted to pre-cache the ***SomeBundle*** iOS bundles you would have a structure like:
         ```
         PROJECT
