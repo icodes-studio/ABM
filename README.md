@@ -193,7 +193,7 @@ _**A**sset **B**undle **M**anager_
                         \SomeBundle
                         \SomeBundle.manifest
         ```
-    - You can simply copy them using the menu below.
+    - You can simply copy them using the following menu.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-3.png)
 - **Loading strategies**
     - When you make a ***LoadAsset(...)*** call ABM will check to see if that bundle exists in the StreamingAssets folder first.
