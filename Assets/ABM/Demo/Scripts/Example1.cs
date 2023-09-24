@@ -15,7 +15,7 @@ public class Example1 : MonoBehaviour
     {
         //Caching.ClearCache();
         abm = new AssetBundleManager();
-        abm//.Initialize("https://YourCDN/AssetBundles")
+        abm//.Initialize("https://www.example.com/AssetBundles")
            //.UseStreamingAssets()
            .UseSimulation()
            .Load(success =>

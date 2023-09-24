@@ -18,7 +18,7 @@ public class Example2 : MonoBehaviour
         //Caching.ClearCache();
         abm = new AssetBundleManager();
         var loadAsync = abm
-            //.Initialize("https://YourCDN/AssetBundles")
+            //.Initialize("https://www.example.com/AssetBundles")
             //.UseStreamingAssets()
             .UseSimulation()
             .Load();
