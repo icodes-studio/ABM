@@ -26,7 +26,7 @@ _**A**sset **B**undle **M**anager_
     - When you are done testing your bundles you need to upload them to a server. 
     - They can go anywhere in the server as long as they are contained in a PLATFORM folder. 
     - For example, builds for iOS bundles should be accessable from http://www.example.com/AssetBundles/iOS. 
-    - The full list of supported targets can be found in [***AssetBundleTools.cs.***](https://github.com/icodes-studio/AssetBundleManager/blob/master/Assets/Scripts/AssetBundleTools.cs)
+    - The full list of supported targets can be found in [***AssetBundleTools.cs.***](https://github.com/icodes-studio/ABM/blob/main/Assets/ABM/Scripts/AssetBundleTools.cs)
 
 
 　
@@ -34,17 +34,17 @@ _**A**sset **B**undle **M**anager_
 ## # Example #1
 
 - **using a callback**
-    - *https://github.com/icodes-studio/AssetBundleManager/blob/master/Assets/Demo/Example1.cs*
+    - *https://github.com/icodes-studio/ABM/blob/main/Assets/ABM/Demo/Scripts/Example1.cs*
     - ***UseSimulation()*** configures ABM to use the default folder structure to retrieve bundles.
     - This convenience means you don't have to upload your bundles to a remote server in order to test them.
     - You can use your local files instead.
         ```csharp
         using UnityEngine;
-        using AssetBundles;
+        using ABM;
 
         public class Example1 : MonoBehaviour
         {
-            private AssetBundleManager abm;
+            private static AssetBundleManager abm;
 
             private void Start()
             {
@@ -83,17 +83,17 @@ _**A**sset **B**undle **M**anager_
 ## # Example #2
 
 - **using a Coroutine**
-    - *https://github.com/icodes-studio/AssetBundleManager/blob/master/Assets/Demo/Example2.cs*
+    - *https://github.com/icodes-studio/ABM/blob/main/Assets/ABM/Demo/Scripts/Example2.cs*
     - If you prefer to use a ***coroutine*** instead of a callback
         ```csharp
         using System.Collections;
         using UnityEngine;
         using UnityEngine.SceneManagement;
-        using AssetBundles;
+        using ABM;
 
         public class Example2 : MonoBehaviour
         {
-            private AssetBundleManager abm;
+            private static AssetBundleManager abm;
 
             private IEnumerator Start()
             {
@@ -129,17 +129,17 @@ _**A**sset **B**undle **M**anager_
 ## # Example #3
 
 - **using a Treading.Task**
-    - *https://github.com/icodes-studio/AssetBundleManager/blob/master/Assets/Demo/Example3.cs*
+    - *https://github.com/icodes-studio/ABM/blob/main/Assets/ABM/Demo/Scripts/Example3.cs*
     - If you prefer to use a ***Threading.Task*** instead of a coroutine
         ```csharp
         #if NET_4_6 || NET_STANDARD_2_0
         using UnityEngine;
         using UnityEngine.UI;
-        using AssetBundles;
+        using ABM;
 
         public class Example3 : MonoBehaviour
         {
-            private AssetBundleManager abm;
+            private static AssetBundleManager abm;
 
             private async void Start()
             {
@@ -446,8 +446,4 @@ _**A**sset **B**undle **M**anager_
 
 - **Description**
     - Cleans up all downloaded bundles.
-
-
-　
-
 
