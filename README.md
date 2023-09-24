@@ -1,4 +1,4 @@
-![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Assets/ABM-LOGO.png)
+# ABM
 
 _**A**sset **B**undle **M**anager_
 
