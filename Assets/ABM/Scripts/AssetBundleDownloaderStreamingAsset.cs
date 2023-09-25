@@ -69,8 +69,10 @@ namespace ABM
                     command.OnComplete(request.assetBundle);
                     yield break;
                 }
-
-                Debug.LogWarning($"StreamingAssets download failed for bundle [{command.BundleName}], switching to standard download.");
+                else
+                {
+                    Debug.LogWarning($"StreamingAssets download failed for bundle [{command.BundleName}], switching to standard download.");
+                }
             }
 
             downloader.Handle(command);

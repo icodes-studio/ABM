@@ -12,7 +12,7 @@ namespace ABM
 
         public bool readyToLoad = false;
         private string[] baseUris = null;
-        private string platformName = AssetBundleTools.GetPlatformName();
+        private string platformName = string.Empty;
         private DownloadStrategy downloadStrategy = DownloadStrategy.Remote;
         private IDictionary<string, BundleContainer> activeBundles = new Dictionary<string, BundleContainer>(StringComparer.OrdinalIgnoreCase);
         private IDictionary<string, DownloadCallback> downloadCallbacks = new Dictionary<string, DownloadCallback>(StringComparer.OrdinalIgnoreCase);

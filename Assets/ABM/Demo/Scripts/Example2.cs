@@ -6,8 +6,6 @@ using ABM;
 //[ExecuteInEditMode]
 public class Example2 : MonoBehaviour
 {
-    private static AssetBundleManager abm;
-
     private void Awake()
     {
         Application.runInBackground = true;
@@ -16,13 +14,13 @@ public class Example2 : MonoBehaviour
     private IEnumerator Start()
     {
         //Caching.ClearCache();
-        abm = new AssetBundleManager();
-        var loadAsync = abm
+
+        var abm = AssetBundleManager.i
             //.Initialize("https://www.example.com/AssetBundles")
             //.UseStreamingAssets()
-            .UseSimulation()
-            .Load();
+            .UseSimulation();
 
+        var loadAsync = abm.Load();
         yield return loadAsync;
         if (loadAsync.Success)
         {
@@ -30,14 +28,9 @@ public class Example2 : MonoBehaviour
             yield return loadAssetAsync;
             if (loadAssetAsync.Success)
             {
-                yield return SceneManager.LoadSceneAsync("Example3", LoadSceneMode.Additive);
+                yield return SceneManager.LoadSceneAsync("Example3");
                 abm.ReleaseAsset(loadAssetAsync.AssetBundle);
             }
         }
-    }
-
-    private void OnDestroy()
-    {
-        abm?.Dispose();
     }
 }
