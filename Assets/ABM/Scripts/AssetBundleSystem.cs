@@ -7,12 +7,15 @@ namespace ABM
         protected override void Awake()
         {
             base.Awake();
+
             platformName = AssetBundleTools.GetPlatformName();
+            Application.runInBackground = true;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
             Dispose();
         }
     }

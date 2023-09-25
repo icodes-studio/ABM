@@ -6,15 +6,9 @@ using ABM;
 //[ExecuteInEditMode]
 public class Example3 : MonoBehaviour
 {
-    private void Awake()
-    {
-        Application.runInBackground = true;
-    }
-
     private async void Start()
     {
         //Caching.ClearCache();
-
         var abm = AssetBundleManager.i
             //.Initialize("https://www.example.com/AssetBundles")
             //.UseStreamingAssets()

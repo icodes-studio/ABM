@@ -44,32 +44,23 @@ _**A**sset **B**undle **M**anager_
 
         public class Example1 : MonoBehaviour
         {
-            private static AssetBundleManager abm;
-
             private void Start()
             {
-                abm = new AssetBundleManager();
-                abm.Initialize("http://www.example.com/AssetBundles")
-                   .UseSimulation()
-                   .Load(success =>
+                var abm = AssetBundleManager.i.Initialize("https://www.example.com/AssetBundles");
+                abm.Load(success =>
+                {
+                    if (success)
                     {
-                        if (success)
+                        abm.LoadAsset("prefabs", bundle =>
                         {
-                            abm.LoadAsset("prefabs", bundle =>
+                            if (bundle != null)
                             {
-                                if (bundle != null)
-                                {
-                                    Instantiate(bundle.LoadAsset<GameObject>("button"), transform);
-                                    abm.ReleaseAsset(bundle);
-                                }
-                            });
-                        }
-                    });
-            }
-
-            private void OnDestroy()
-            {
-                abm?.Dispose();
+                                Instantiate(bundle.LoadAsset<GameObject>("button"), transform);
+                                abm.ReleaseAsset(bundle);
+                            }
+                        });
+                    }
+                });
             }
         }
         ```
@@ -93,16 +84,10 @@ _**A**sset **B**undle **M**anager_
 
         public class Example2 : MonoBehaviour
         {
-            private static AssetBundleManager abm;
-
             private IEnumerator Start()
             {
-                abm = new AssetBundleManager();
-                var loadAsync = abm
-                    .Initialize("http://icoder.example.com/AssetBundles")
-                    .UseSimulation()
-                    .Load();
-
+                var abm = AssetBundleManager.i.Initialize("https://www.example.com/AssetBundles");
+                var loadAsync = abm.Load();
                 yield return loadAsync;
                 if (loadAsync.Success)
                 {
@@ -110,15 +95,10 @@ _**A**sset **B**undle **M**anager_
                     yield return loadAssetAsync;
                     if (loadAssetAsync.Success)
                     {
-                        yield return SceneManager.LoadSceneAsync("test", LoadSceneMode.Additive);
+                        yield return SceneManager.LoadSceneAsync("Example3");
                         abm.ReleaseAsset(loadAssetAsync.AssetBundle);
                     }
                 }
-            }
-
-            private void OnDestroy()
-            {
-                abm?.Dispose();
             }
         }
         ```
@@ -139,15 +119,9 @@ _**A**sset **B**undle **M**anager_
 
         public class Example3 : MonoBehaviour
         {
-            private static AssetBundleManager abm;
-
             private async void Start()
             {
-                abm = new AssetBundleManager();
-                abm.Initialize("http://www.example.com/AssetBundles")
-                   .UseSimulation()
-                   .Load();
-
+                var abm = AssetBundleManager.i.Initialize("https://www.example.com/AssetBundles");
                 var loadAsync = abm.LoadAsync();
                 await loadAsync;
                 if (loadAsync.Result)
@@ -161,11 +135,6 @@ _**A**sset **B**undle **M**anager_
                         abm.ReleaseAsset(loadAssetAsync.Result);
                     }
                 }
-            }
-
-            private void OnDestroy()
-            {
-                abm?.Dispose();
             }
         }
         #endif
@@ -196,12 +165,12 @@ _**A**sset **B**undle **M**anager_
     - You can simply copy them using the following menu.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-3.png)
 - **Loading strategies**
-    - When you make a ***LoadAsset(...)*** call ABM will check to see if that bundle exists in the StreamingAssets folder first.
+    - When you make a ***LoadAsset(...)*** call, ABM will check to see if that bundle exists in the StreamingAssets folder first.
     - And use it if its hash matches the hash of the remote server.
     - If the file does not exist OR the hash is different then the remote bundle is used.
     - You can change this behaviour when initializing ABM by changing the prioritization strategy:
         ```csharp
-        abm.SetPrioritizationStrategy(PrioritizationStrategy.StreamingAssets);
+        abm.SetDownloadStrategy(DownloadStrategy.StreamingAssets);
         ```
     - This will tell ABM to always use the StreamingAssets bundle if it exists.
     - If the bundle doesn't exist in StreamingAssets the remote one will be used.
