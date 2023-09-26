@@ -8,10 +8,10 @@ namespace ABM
     {
         public AssetBundleLoadAsync Load()
         {
-            return Load(platformName, true);
+            return Load(AssetBundleTools.PlatformName, true);
         }
 
-        public AssetBundleLoadAsync Load(string manifestName, bool refresh)
+        public AssetBundleLoadAsync Load(string name, bool refresh)
         {
             if (baseUris == null || baseUris.Length == 0)
             {
@@ -19,15 +19,15 @@ namespace ABM
                 return null;
             }
 
-            return new AssetBundleLoadAsync(manifestName, refresh, LoadManifest);
+            return new AssetBundleLoadAsync(name, refresh, LoadManifest);
         }
 
-        public AssetBundleLoadAssetAsync LoadAsset(string bundleName)
+        public AssetBundleLoadAssetAsync LoadAsset(string name)
         {
-            return LoadAsset(bundleName, DownloadSettings.UseCacheIfAvailable);
+            return LoadAsset(name, DownloadSettings.UseCacheIfAvailable);
         }
 
-        public AssetBundleLoadAssetAsync LoadAsset(string bundleName, DownloadSettings downloadSettings)
+        public AssetBundleLoadAssetAsync LoadAsset(string name, DownloadSettings downloadSettings)
         {
             if (readyToLoad == false)
             {
@@ -35,16 +35,16 @@ namespace ABM
                 return null;
             }
 
-            return new AssetBundleLoadAssetAsync(bundleName, downloadSettings, LoadAsset);
+            return new AssetBundleLoadAssetAsync(name, downloadSettings, LoadAsset);
         }
     }
 
     public class AssetBundleLoadAsync : IEnumerator
     {
-        public AssetBundleLoadAsync(string bundleName, bool refresh, Action<string, bool, Action<AssetBundle>> loader)
+        public AssetBundleLoadAsync(string name, bool refresh, Action<string, bool, Action<AssetBundle>> loader)
         {
             IsDone = false;
-            loader?.Invoke(bundleName, refresh, OnAssetBundleManifestComplete);
+            loader?.Invoke(name, refresh, OnAssetBundleManifestComplete);
         }
 
         private void OnAssetBundleManifestComplete(AssetBundle bundle)
@@ -62,10 +62,10 @@ namespace ABM
 
     public class AssetBundleLoadAssetAsync : IEnumerator
     {
-        public AssetBundleLoadAssetAsync(string bundleName, DownloadSettings downloadSettings, Action<string, DownloadSettings, Action<AssetBundle>> loader)
+        public AssetBundleLoadAssetAsync(string name, DownloadSettings downloadSettings, Action<string, DownloadSettings, Action<AssetBundle>> loader)
         {
             IsDone = false;
-            loader?.Invoke(bundleName, downloadSettings, OnAssetBundleComplete);
+            loader?.Invoke(name, downloadSettings, OnAssetBundleComplete);
         }
 
         private void OnAssetBundleComplete(AssetBundle bundle)

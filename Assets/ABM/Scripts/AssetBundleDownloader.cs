@@ -7,6 +7,19 @@ using UnityEngine.Networking;
 
 namespace ABM
 {
+    interface ICommandHandler<in T>
+    {
+        void Handle(T command);
+    }
+
+    class AssetBundleDownloadCommand
+    {
+        public string Name;
+        public uint Version;
+        public Hash128 Hash;
+        public Action<AssetBundle> OnComplete;
+    }
+
     class AssetBundleDownloader : ICommandHandler<AssetBundleDownloadCommand>
     {
         private static readonly int MaxRetryCount = 3;
@@ -18,19 +31,11 @@ namespace ABM
         private string baseUri = default;
         private bool cachingDisabled = false;
         private int activeDownloads = 0;
-        private Action<IEnumerator> coroutine = default;
         private Queue<IEnumerator> downloads = new Queue<IEnumerator>();
 
         public AssetBundleDownloader(string baseUri)
         {
             this.baseUri = baseUri;
-
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-                coroutine = AssetBundleCoroutineEditor.Coroutine;
-            else
-#endif
-                coroutine = AssetBundleCoroutine.Coroutine;
 
             if (this.baseUri.EndsWith("/") == false)
                 this.baseUri += "/";
@@ -46,7 +51,7 @@ namespace ABM
             if (activeDownloads < MaxSimultaneousDownloads)
             {
                 activeDownloads++;
-                coroutine(download);
+                AssetBundleCoroutine.Start(download);
             }
             else
             {
@@ -57,7 +62,7 @@ namespace ABM
         private IEnumerator Download(AssetBundleDownloadCommand command, int retryCount)
         {
             UnityWebRequest request;
-            var uri = baseUri + command.BundleName;
+            var uri = baseUri + command.Name;
 
             if (cachingDisabled == true || (command.Version <= 0 && command.Hash == DefaultHash))
             {

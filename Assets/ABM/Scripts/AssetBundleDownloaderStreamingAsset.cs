@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace ABM
@@ -7,33 +6,21 @@ namespace ABM
     class AssetBundleDownloaderStreamingAsset : ICommandHandler<AssetBundleDownloadCommand>
     {
         private string manifestName;
-        private string platformName;
         private string streamingAssetsPath;
         private DownloadStrategy downloadStrategy;
         private ICommandHandler<AssetBundleDownloadCommand> downloader;
-        private Action<IEnumerator> coroutine;
 
         public AssetBundleDownloaderStreamingAsset(
             string manifestName,
-            string platformName,
             ICommandHandler<AssetBundleDownloadCommand> downloader,
             DownloadStrategy downloadStrategy)
         {
             this.downloader = downloader;
             this.manifestName = manifestName;
-            this.platformName = platformName;
             this.downloadStrategy = downloadStrategy;
 
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-                coroutine = AssetBundleCoroutineEditor.Coroutine;
-            else
-#endif
-                coroutine = AssetBundleCoroutine.Coroutine;
-
-            streamingAssetsPath = $"{Application.streamingAssetsPath}/{AssetBundleTools.AssetFolder}/{platformName}";
-
-            var manifestPath = $"{streamingAssetsPath}/{platformName}";
+            streamingAssetsPath = $"{Application.streamingAssetsPath}/{AssetBundleTools.AssetFolder}/{AssetBundleTools.PlatformName}";
+            var manifestPath = $"{streamingAssetsPath}/{AssetBundleTools.PlatformName}";
             var manifestBundle = AssetBundle.LoadFromFile(manifestPath);
 
             if (manifestBundle == null)
@@ -49,14 +36,14 @@ namespace ABM
 
         public void Handle(AssetBundleDownloadCommand command)
         {
-            coroutine(OnHandle(command));
+            AssetBundleCoroutine.Start(OnHandle(command));
         }
 
         private IEnumerator OnHandle(AssetBundleDownloadCommand command)
         {
-            if (IsAvailableInStreamingAssets(command.BundleName, command.Hash))
+            if (IsAvailableInStreamingAssets(command.Name, command.Hash))
             {
-                var request = AssetBundle.LoadFromFileAsync(streamingAssetsPath + "/" + command.BundleName);
+                var request = AssetBundle.LoadFromFileAsync(streamingAssetsPath + "/" + command.Name);
                 yield return request;
                 //while (request.isDone == false)
                 //{
@@ -71,14 +58,14 @@ namespace ABM
                 }
                 else
                 {
-                    Debug.LogWarning($"StreamingAssets download failed for bundle [{command.BundleName}], switching to standard download.");
+                    Debug.LogWarning($"StreamingAssets download failed for bundle [{command.Name}], switching to standard download.");
                 }
             }
 
             downloader.Handle(command);
         }
 
-        private bool IsAvailableInStreamingAssets(string bundleName, Hash128 hash)
+        private bool IsAvailableInStreamingAssets(string name, Hash128 hash)
         {
             if (Manifest == null)
             {
@@ -86,26 +73,27 @@ namespace ABM
                 return false;
             }
 
-            if (bundleName == manifestName)
+            if (name == manifestName)
             {
                 Debug.Log("Attempting to download manifest file, using standard download.");
                 return false;
             }
 
-            if (Manifest.GetAssetBundleHash(bundleName) != hash && downloadStrategy != DownloadStrategy.StreamingAssets)
+            if (Manifest.GetAssetBundleHash(name) != hash && downloadStrategy != DownloadStrategy.StreamingAssets)
             {
-                Debug.Log($"Hash for [{bundleName}] does not match the one in StreamingAssets, using standard download.");
+                Debug.Log($"Hash for [{name}] does not match the one in StreamingAssets, using standard download.");
                 return false;
             }
 
-            Debug.Log($"Using StreamingAssets for bundle [{bundleName}]");
+            Debug.Log($"Using StreamingAssets for bundle [{name}]");
 
             return true;
         }
 
         public AssetBundleManifest Manifest
         {
-            get; private set;
+            get;
+            private set;
         }
     }
 }

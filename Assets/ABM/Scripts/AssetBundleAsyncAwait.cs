@@ -8,25 +8,25 @@ namespace ABM
     {
         public Task<bool> LoadAsync()
         {
-            return LoadAsync(platformName, true);
+            return LoadAsync(AssetBundleTools.PlatformName, true);
         }
 
-        public Task<bool> LoadAsync(string manifestName, bool refresh)
+        public Task<bool> LoadAsync(string name, bool refresh)
         {
             var completionSource = new TaskCompletionSource<bool>();
-            Load(manifestName, refresh, result => completionSource.SetResult(result));
+            Load(name, refresh, result => completionSource.SetResult(result));
             return completionSource.Task;
         }
 
-        public Task<AssetBundle> LoadAssetAsync(string bundleName)
+        public Task<AssetBundle> LoadAssetAsync(string name)
         {
-            return LoadAssetAsync(bundleName, DownloadSettings.UseCacheIfAvailable);
+            return LoadAssetAsync(name, DownloadSettings.UseCacheIfAvailable);
         }
 
-        public Task<AssetBundle> LoadAssetAsync(string bundleName, DownloadSettings downloadSettings)
+        public Task<AssetBundle> LoadAssetAsync(string name, DownloadSettings downloadSettings)
         {
             var completionSource = new TaskCompletionSource<AssetBundle>();
-            LoadAsset(bundleName, downloadSettings, bundle => completionSource.SetResult(bundle));
+            LoadAsset(name, downloadSettings, bundle => completionSource.SetResult(bundle));
             return completionSource.Task;
         }
     }

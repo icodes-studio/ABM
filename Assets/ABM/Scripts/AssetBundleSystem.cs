@@ -8,7 +8,6 @@ namespace ABM
         {
             base.Awake();
 
-            platformName = AssetBundleTools.GetPlatformName();
             Application.runInBackground = true;
         }
 

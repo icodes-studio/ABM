@@ -66,17 +66,15 @@ namespace ABM
         }
 #endif
 
-        public static string GetPlatformName()
-        {
+        public static string PlatformName =>
 #if UNITY_EDITOR
-            return GetPlatformName(EditorUserBuildSettings.activeBuildTarget);
+            GetPlatformName(EditorUserBuildSettings.activeBuildTarget);
 #else
-			return GetPlatformName(Application.platform);
+			GetPlatformName(Application.platform);
 #endif
-        }
 
 #if UNITY_EDITOR
-        public static string GetPlatformName(BuildTarget target) =>
+        private static string GetPlatformName(BuildTarget target) =>
             target switch
             {
                 BuildTarget.Android             => "Android",
@@ -92,7 +90,7 @@ namespace ABM
             };
 #endif
 
-        public static string GetPlatformName(RuntimePlatform platform) =>
+        private static string GetPlatformName(RuntimePlatform platform) =>
             platform switch
             {
                 RuntimePlatform.Android         => "Android",
@@ -106,7 +104,7 @@ namespace ABM
                 _                               => platform.ToString()
             };
 
-        public static void CopyPath(string source, string target)
+        private static void CopyPath(string source, string target)
         {
             if (Directory.Exists(target) == false)
                 Directory.CreateDirectory(target);
@@ -121,7 +119,7 @@ namespace ABM
                 CopyPath(directory, Path.Combine(target, Path.GetFileName(directory)));
         }
 
-        public static void ClearPath(string path)
+        private static void ClearPath(string path)
         {
             if (Directory.Exists(path))
             {

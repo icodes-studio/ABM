@@ -5,6 +5,26 @@ using UnityEngine;
 
 namespace ABM
 {
+    public enum DownloadSettings
+    {
+        UseCacheIfAvailable,
+        DoNotUseCache
+    }
+
+    public enum DownloadStrategy
+    {
+        Remote,
+        StreamingAssets,
+    }
+
+    public enum ManifestType
+    {
+        None,
+        Remote,
+        LocalCached,
+        StreamingAssets,
+    }
+
     public sealed partial class AssetBundleManager : IDisposable
     {
         private const string ManifestDownloadKey = "@manifest download key";
@@ -12,7 +32,6 @@ namespace ABM
 
         public bool readyToLoad = false;
         private string[] baseUris = null;
-        private string platformName = string.Empty;
         private DownloadStrategy downloadStrategy = DownloadStrategy.Remote;
         private IDictionary<string, BundleContainer> activeBundles = new Dictionary<string, BundleContainer>(StringComparer.OrdinalIgnoreCase);
         private IDictionary<string, DownloadCallback> downloadCallbacks = new Dictionary<string, DownloadCallback>(StringComparer.OrdinalIgnoreCase);
@@ -57,7 +76,7 @@ namespace ABM
             for (int i = 0; i < uris.Length; i++)
             {
                 var builder = new StringBuilder(uris[i]);
-                (!uris[i].EndsWith("/") ? builder.Append("/") : builder).Append(platformName).Append("/");
+                (!uris[i].EndsWith("/") ? builder.Append("/") : builder).Append(AssetBundleTools.PlatformName).Append("/");
                 baseUris[i] = builder.ToString();
             }
             return this;
@@ -81,18 +100,18 @@ namespace ABM
 
         public void Load(Action<bool> callback)
         {
-            Load(platformName, true, callback);
+            Load(AssetBundleTools.PlatformName, true, callback);
         }
 
-        public void Load(string manifestName, bool refresh, Action<bool> callback)
+        public void Load(string name, bool refresh, Action<bool> callback)
         {
             if (baseUris == null || baseUris.Length == 0)
                 throw new Exception("You need to set the base uri before you can initialize.");
 
-            LoadManifest(manifestName, refresh, bundle => callback(bundle != null));
+            LoadManifest(name, refresh, bundle => callback(bundle != null));
         }
 
-        private void LoadManifest(string manifestName, bool refresh, Action<AssetBundle> callback)
+        private void LoadManifest(string name, bool refresh, Action<AssetBundle> callback)
         {
             if (downloadCallbacks.TryGetValue(ManifestDownloadKey, out var downloadCallback))
             {
@@ -109,29 +128,20 @@ namespace ABM
             if (refresh)
             {
                 manifestVersion = (uint)PlayerPrefs.GetInt(ManifestVersionKey, 0) + 1;
-                while (Caching.IsVersionCached(manifestName, new Hash128(0, 0, 0, manifestVersion)))
+                while (Caching.IsVersionCached(name, new Hash128(0, 0, 0, manifestVersion)))
                     manifestVersion++;
             }
 
-            LoadManifest(manifestName, manifestVersion, 0);
+            LoadManifest(name, manifestVersion, 0);
         }
 
-        private void LoadManifest(string manifestName, uint version, int index)
+        private void LoadManifest(string name, uint version, int index)
         {
             downloader = new AssetBundleDownloader(baseUris[index]);
-
-            if (Application.isEditor == false)
-            {
-                downloader = new AssetBundleDownloaderStreamingAsset(
-                    manifestName,
-                    platformName,
-                    downloader,
-                    downloadStrategy);
-            }
-
+            downloader = new AssetBundleDownloaderStreamingAsset(name, downloader, downloadStrategy);
             downloader.Handle(new AssetBundleDownloadCommand
             {
-                BundleName = manifestName,
+                Name = name,
                 Version = version,
                 OnComplete = bundle =>
                 {
@@ -139,23 +149,23 @@ namespace ABM
                     if (bundle == null && index < maxUri)
                     {
                         Debug.Log($"Unable to download manifest from [{baseUris[index]}], attempting [{baseUris[index + 1]}]");
-                        LoadManifest(manifestName, version, index + 1);
+                        LoadManifest(name, version, index + 1);
                     }
                     else if (bundle == null && index >= maxUri && version > 1 && ManifestType != ManifestType.LocalCached)
                     {
                         ManifestType = ManifestType.LocalCached;
                         Debug.Log($"Unable to download manifest, attempting to use one previously downloaded (version [{version}]).");
-                        LoadManifest(manifestName, version - 1, index);
+                        LoadManifest(name, version - 1, index);
                     }
                     else
                     {
-                        OnLoadManifest(bundle, manifestName, version);
+                        OnLoadManifest(bundle, name, version);
                     }
                 }
             });
         }
 
-        private void OnLoadManifest(AssetBundle bundle, string manifestName, uint version)
+        private void OnLoadManifest(AssetBundle bundle, string name, uint version)
         {
             if (bundle == null)
             {
@@ -175,7 +185,7 @@ namespace ABM
             {
                 Manifest = bundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
                 PlayerPrefs.SetInt(ManifestVersionKey, (int)version);
-                Caching.ClearOtherCachedVersions(manifestName, new Hash128(0, 0, 0, version));
+                Caching.ClearOtherCachedVersions(name, new Hash128(0, 0, 0, version));
             }
 
             if (Manifest == null)
@@ -193,7 +203,7 @@ namespace ABM
             bundle?.Unload(false);
         }
 
-        public void LoadAsset(string bundleName, Action<AssetBundle> callback)
+        public void LoadAsset(string name, Action<AssetBundle> callback)
         {
             if (readyToLoad == false)
             {
@@ -202,10 +212,10 @@ namespace ABM
                 return;
             }
 
-            LoadAsset(bundleName, DownloadSettings.UseCacheIfAvailable, callback);
+            LoadAsset(name, DownloadSettings.UseCacheIfAvailable, callback);
         }
 
-        public void LoadAsset(string bundleName, DownloadSettings downloadSettings, Action<AssetBundle> callback)
+        public void LoadAsset(string name, DownloadSettings settings, Action<AssetBundle> callback)
         {
             if (readyToLoad == false)
             {
@@ -214,30 +224,30 @@ namespace ABM
                 return;
             }
 
-            if (activeBundles.TryGetValue(bundleName, out var activeBundle))
+            if (activeBundles.TryGetValue(name, out var activeBundle))
             {
                 activeBundle.References++;
                 callback(activeBundle.AssetBundle);
                 return;
             }
 
-            if (downloadCallbacks.TryGetValue(bundleName, out var downloadCallback))
+            if (downloadCallbacks.TryGetValue(name, out var downloadCallback))
             {
                 downloadCallback.References++;
                 downloadCallback.OnComplete += callback;
                 return;
             }
 
-            downloadCallbacks.Add(bundleName, new DownloadCallback(callback));
+            downloadCallbacks.Add(name, new DownloadCallback(callback));
 
             var mainBundle = new AssetBundleDownloadCommand
             {
-                BundleName = bundleName,
-                Hash = (downloadSettings == DownloadSettings.UseCacheIfAvailable) ? Manifest.GetAssetBundleHash(bundleName) : default,
-                OnComplete = bundle => OnLoadAsset(bundle, bundleName)
+                Name = name,
+                Hash = (settings == DownloadSettings.UseCacheIfAvailable) ? Manifest.GetAssetBundleHash(name) : default,
+                OnComplete = bundle => OnLoadAsset(bundle, name)
             };
 
-            var dependencies = Manifest.GetDirectDependencies(bundleName);
+            var dependencies = Manifest.GetDirectDependencies(name);
             var dependenciesToDownload = new List<string>();
 
             foreach (var dependency in dependencies)
@@ -270,22 +280,22 @@ namespace ABM
             }
         }
 
-        private void OnLoadAsset(AssetBundle bundle, string bundleName)
+        private void OnLoadAsset(AssetBundle bundle, string name)
         {
-            var callback = downloadCallbacks[bundleName];
-            downloadCallbacks.Remove(bundleName);
+            var callback = downloadCallbacks[name];
+            downloadCallbacks.Remove(name);
 
-            if (activeBundles.TryGetValue(bundleName, out var activeBundle))
+            if (activeBundles.TryGetValue(name, out var activeBundle))
             {
                 activeBundle.References++;
             }
             else
             {
-                activeBundles.Add(bundleName, new BundleContainer
+                activeBundles.Add(name, new BundleContainer
                 {
                     AssetBundle = bundle,
                     References = callback.References,
-                    Dependencies = Manifest.GetDirectDependencies(bundleName)
+                    Dependencies = Manifest.GetDirectDependencies(name)
                 });
             }
 
@@ -316,15 +326,15 @@ namespace ABM
             ReleaseAsset(bundle.name, unloadAllLoadedObjects, force);
         }
 
-        public void ReleaseAsset(string bundleName, bool unloadAllLoadedObjects, bool force)
+        public void ReleaseAsset(string name, bool unloadAllLoadedObjects, bool force)
         {
-            if (activeBundles.TryGetValue(bundleName, out var activeBundle) == false)
+            if (activeBundles.TryGetValue(name, out var activeBundle) == false)
                 return;
 
             if (force == true || --activeBundle.References <= 0)
             {
                 activeBundle.AssetBundle?.Unload(unloadAllLoadedObjects);
-                activeBundles.Remove(bundleName);
+                activeBundles.Remove(name);
 
                 foreach (var dependency in activeBundle.Dependencies)
                     ReleaseAsset(dependency, unloadAllLoadedObjects, force);
@@ -337,15 +347,15 @@ namespace ABM
             return this;
         }
 
-        public bool IsVersionCached(string bundleName)
+        public bool IsVersionCached(string name)
         {
             if (Manifest == null)
                 return false;
 
-            if (string.IsNullOrEmpty(bundleName))
+            if (string.IsNullOrEmpty(name))
                 return false;
 
-            return Caching.IsVersionCached(bundleName, Manifest.GetAssetBundleHash(bundleName));
+            return Caching.IsVersionCached(name, Manifest.GetAssetBundleHash(name));
         }
 
         public void Dispose()
