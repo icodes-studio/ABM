@@ -18,7 +18,7 @@ _**A**sset **B**undle **M**anager_
 ## # Gettting started
 
 - **Initializing**
-    - First, you need to build your bundles.
+    - First of all, you need to build your bundles.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-0.png)
     - By default, it puts bundles in ***PROJECT\AssetBundles\PLATFORM***.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-1.png)
