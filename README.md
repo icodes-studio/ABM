@@ -1,7 +1,7 @@
 # ABM
 
-_**A**sset **B**undle **M**anager_
-
+- **A**sset **B**undle **M**anager
+- Forked from [**SadPandaStudios/AssetBundleManager**](https://github.com/SadPandaStudios/AssetBundleManager)
 
 　
 
