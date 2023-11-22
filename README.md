@@ -46,7 +46,11 @@
         {
             private void Start()
             {
-                var abm = AssetBundleManager.i.Initialize("https://www.example.com/AssetBundles");
+                var abm = AssetBundleManager.i
+                    //.Initialize("https://www.example.com/AssetBundles")
+                    //.UseStreamingAssets()
+                    .UseSimulation();
+
                 abm.Load(success =>
                 {
                     if (success)
