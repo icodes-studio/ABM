@@ -35,7 +35,7 @@
 
 - **using a callback**
     - *https://github.com/icodes-studio/ABM/blob/main/Assets/ABM/Demo/Scripts/Example1.cs*
-    - ***UseSimulation()*** configures ABM to use the default folder structure to retrieve bundles.
+    - **UseSimulation** configures ABM to use the default folder structure to retrieve bundles.
     - This convenience means you don't have to upload your bundles to a remote server in order to test them.
     - You can use your local files instead.
         ```csharp
@@ -68,8 +68,8 @@
             }
         }
         ```
-    - The ***Initialize(...)*** function configures ABM to point to a remote server that contains your bundles.
-    - Calling ***Load(...)*** causes ABM to download the manifest file for your bundles. 
+    - The **Initialize** function configures ABM to point to a remote server that contains your bundles.
+    - Calling **Load** causes ABM to download the manifest file for your bundles. 
     - Once this file is downloaded and processed you are ready to begin downloading bundles.
 
 
@@ -79,7 +79,7 @@
 
 - **using a Coroutine**
     - *https://github.com/icodes-studio/ABM/blob/main/Assets/ABM/Demo/Scripts/Example2.cs*
-    - If you prefer to use a ***coroutine*** instead of a callback
+    - If you prefer to use a **coroutine** instead of a callback
         ```csharp
         using System.Collections;
         using UnityEngine;
@@ -114,7 +114,7 @@
 
 - **using a Treading.Task**
     - *https://github.com/icodes-studio/ABM/blob/main/Assets/ABM/Demo/Scripts/Example3.cs*
-    - If you prefer to use a ***Threading.Task*** instead of a coroutine
+    - If you prefer to use a **Threading.Task** instead of a coroutine
         ```csharp
         #if NET_4_6 || NET_STANDARD_2_0
         using UnityEngine;
@@ -143,7 +143,7 @@
         }
         #endif
         ```
-    - Threading.Task works only in ***.net 4.x*** or ***.net standard 2.0 ↑*** environment.
+    - Threading.Task works only in **.net 4.x** or **.net standard 2.0 ↑** environment.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-2.png)
 
 
@@ -152,9 +152,9 @@
 ## # StreamingAssets
 
 - **Preparation**
-    - ABM supports pre-caching your bundles with the use of the ***StreamingAssets*** folder in Unity.
-    - Once your bundles are built you can copy the manifest and any number of bundles to the ***StreamingAsests\AssetBundles\PLATFORM*** folder.
-    - For example if you wanted to pre-cache the ***SomeBundle*** iOS bundles you would have a structure like:
+    - ABM supports pre-caching your bundles with the use of the **StreamingAssets** folder in Unity.
+    - Once your bundles are built you can copy the manifest and any number of bundles to the **StreamingAsests\AssetBundles\PLATFORM** folder.
+    - For example if you wanted to pre-cache the **SomeBundle** iOS bundles you would have a structure like:
         ```
         PROJECT
         \Assets
@@ -169,7 +169,7 @@
     - You can simply copy them using the following menu.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-3.png)
 - **Loading strategies**
-    - When you make a ***LoadAsset(...)*** call, ABM will check to see if that bundle exists in the StreamingAssets folder first.
+    - When you make a **LoadAsset(...)** call, ABM will check to see if that bundle exists in the StreamingAssets folder first.
     - And use it if its hash matches the hash of the remote server.
     - If the file does not exist OR the hash is different then the remote bundle is used.
     - You can change this behaviour when initializing ABM by changing the prioritization strategy:
@@ -205,7 +205,7 @@
 - ***Problem #1***
     - Error while downloading Asset Bundle: Failed to decompress data for the AssetBundle
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/troubleshooting-0.png)
-    - If you are using FIlezilla to upload your asset bundles. Try inside of FIlezilla ***Transfers > File Type > Binary***. then delete your build and asset bundles and re-upload them.
+    - If you are using FIlezilla to upload your asset bundles. Try inside of FIlezilla **Transfers > File Type > Binary**. then delete your build and asset bundles and re-upload them.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/troubleshooting-1.png)
     - ***See Also***
         - *https://blog.naver.com/chic1007/221734272760*
