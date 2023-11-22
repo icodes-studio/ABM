@@ -169,7 +169,7 @@
     - You can simply copy them using the following menu.
         > ![](https://github.com/icodes-studio/wiki/blob/main/STUDY%2BRND/Unity3D/AssetBundles/Assets/abm-3.png)
 - **Loading strategies**
-    - When you make a **LoadAsset(...)** call, ABM will check to see if that bundle exists in the StreamingAssets folder first.
+    - When you make a **LoadAsset** call, ABM will check to see if that bundle exists in the StreamingAssets folder first.
     - And use it if its hash matches the hash of the remote server.
     - If the file does not exist OR the hash is different then the remote bundle is used.
     - You can change this behaviour when initializing ABM by changing the prioritization strategy:
