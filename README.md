@@ -4,7 +4,6 @@
 - Forked from [**SadPandaStudios/AssetBundleManager**](https://github.com/SadPandaStudios/AssetBundleManager)
 - [**Documents**](https://www.notion.so/ABM-cc6b42814f10436fb0793916c1c312bc)
 
-　
 
 ## # Environment
 
@@ -13,8 +12,6 @@
     - Unity 2021.3.29f1
     - Unity 2020.3.39f1
 
-
-　
 
 ## # Release note
 
