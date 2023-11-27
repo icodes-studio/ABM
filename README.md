@@ -8,9 +8,9 @@
 ## # Environment
 
 - **Developed & tested with**
-    - Unity 2022.3.4f1
-    - Unity 2021.3.29f1
-    - Unity 2020.3.39f1
+    - *Unity 2022.3.4f1*
+    - *Unity 2021.3.29f1*
+    - *Unity 2020.3.39f1*
 
 
 ## # Release note
